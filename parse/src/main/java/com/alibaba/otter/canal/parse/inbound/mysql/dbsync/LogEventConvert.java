@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -759,9 +760,11 @@ public class LogEventConvert extends AbstractCanalLifeCycle implements BinlogPar
                             javaType = Types.CLOB;
                         } else {
                             // byte数组，直接使用iso-8859-1保留对应编码，浪费内存
-                            columnBuilder.setValue(new String((byte[]) value, ISO_8859_1));
+                            //columnBuilder.setValue(new String((byte[]) value, ISO_8859_1));
                             // columnBuilder.setValueBytes(ByteString.copyFrom((byte[])
                             // value));
+                            //TODO 应该还有更好的方式解决这个问题
+                            columnBuilder.setValue(Base64.encodeBase64String((byte[]) value));
                             javaType = Types.BLOB;
                         }
                         break;
